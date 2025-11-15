@@ -1,6 +1,8 @@
 module Main where
 
+import Control.Exception (IOException, try)
 import Control.Monad (unless)
+import Data.Char (ord)
 import Data.List (isPrefixOf)
 import Data.Time (diffUTCTime, getCurrentTime)
 import System.Directory (doesDirectoryExist, doesFileExist, listDirectory, makeAbsolute)
@@ -41,19 +43,25 @@ showUsageAndExit = do
   hPutStrLn stderr "Usage: ff FILEPATH"
   exitFailure
 
+makeSafe :: String -> String
+makeSafe = map (\c -> if ord c > 127 then '?' else c)
+
 handleFile :: FilePath -> IO ()
-handleFile path = putStrLn $ "Search in File: " ++ path
+handleFile path = putStrLn $ "Search in File: " ++ makeSafe path
 
 handleDirectory :: FilePath -> IO ()
 handleDirectory path = do
-  subpathes <- listDirectory path
-  mapM_
-    ( \subpath -> do
-        unless (isHidden subpath) $
-          processPath $
-            path </> subpath
-    )
-    subpathes
+  result <- try $ listDirectory path :: IO (Either IOException [String])
+  case result of
+    Left err -> putStrLn $ "Error: Could not read directory: " ++ path ++ " (" ++ show err ++ ")"
+    Right subpathes -> do
+      mapM_
+        ( \subpath -> do
+            unless (isHidden subpath) $
+              processPath $
+                path </> subpath
+        )
+        subpathes
 
 showPathNotFoundError :: FilePath -> IO ()
 showPathNotFoundError path = hPutStrLn stderr $ "Error: Path doesn't exist: " ++ path

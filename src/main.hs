@@ -2,6 +2,7 @@ module Main where
 
 import Control.Exception (IOException, try)
 import Control.Monad (unless)
+import Data.ByteString (length, readFile)
 import Data.Char (ord)
 import Data.List (isPrefixOf)
 import Data.Time (diffUTCTime, getCurrentTime)
@@ -47,7 +48,10 @@ makeSafe :: String -> String
 makeSafe = map (\c -> if ord c > 127 then '?' else c)
 
 handleFile :: FilePath -> IO ()
-handleFile path = putStrLn $ "Search in File: " ++ makeSafe path
+handleFile path = do
+  content <- Data.ByteString.readFile path
+  putStrLn $ "Search in File: " ++ makeSafe path ++ " (" ++ show (Data.ByteString.length content) ++ " bytes)"
+  return ()
 
 handleDirectory :: FilePath -> IO ()
 handleDirectory path = do

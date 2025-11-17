@@ -20,7 +20,7 @@ name:               findfast
 -- PVP summary:     +-+------- breaking API changes
 --                  | | +----- non-breaking API additions
 --                  | | | +--- code changes with no API change
-version:            0.0.0
+version:            0.0.1
 
 -- A short (one-line) description of the package.
 -- synopsis:
@@ -53,7 +53,7 @@ extra-doc-files:    CHANGELOG.md
 common warnings
     ghc-options: -Wall
 
-executable findfast
+executable ff 
     -- Import common warning flags.
     import:           warnings
 
@@ -67,7 +67,13 @@ executable findfast
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.17.2.1
+    build-depends:
+      base ^>=4.17.2.1,
+      directory ^>=1.3.9.0,
+      filepath ^>=1.5.4.0,
+      time ^>=1.14,
+      bytestring ^>=0.12.2.0,
+      regex-tdfa ^>=1.3.2.5
 
     -- Directories containing source files.
     hs-source-dirs:   src

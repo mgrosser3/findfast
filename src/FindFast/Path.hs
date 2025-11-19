@@ -11,9 +11,8 @@ import System.FilePath ((</>))
 import System.IO (hPutStrLn, stderr)
 import Text.Regex.TDFA (AllMatches, MatchLength, MatchOffset, getAllMatches, (=~))
 
---
-processPath :: String -> FilePath -> IO ()
-processPath pattern path
+processPath :: (FilePath -> IO ()) -> (FilePath -> IO ()) -> FilePath -> IO ()
+processPath handleFile handleDirectory path
   | isHidden path = return ()
   | otherwise = do
       isFile <- doesFileExist path
@@ -22,44 +21,44 @@ processPath pattern path
       if isFile
         then do
           isBinary <- isBinaryFile path
-          unless isBinary $ handleFile pattern path
+          unless isBinary $ handleFile path
         else
           if isDir
-            then handleDirectory pattern path
+            then handleDirectory path
             else showPathNotFoundError path
 
-handleDirectory :: String -> FilePath -> IO ()
-handleDirectory pattern path = do
-  result <- try $ listDirectory path :: IO (Either IOException [String])
-  case result of
-    Left err -> putStrLn $ "Error: Could not read directory: " ++ path ++ " (" ++ show err ++ ")"
-    Right subpathes -> do
-      mapM_
-        ( \subpath -> do
-            unless (isHidden subpath) $
-              processPath pattern $
-                path </> subpath
-        )
-        subpathes
-
-handleFile :: String -> FilePath -> IO ()
-handleFile pattern path = do
-  result <- try (Data.ByteString.Char8.readFile path) :: IO (Either IOException ByteString)
-  case result of
-    Left err -> putStrLn $ "Error: Could not read file: " ++ path ++ " (" ++ show err ++ ")"
-    Right content -> do
-      let matches = getAllMatches (content =~ pattern :: AllMatches [] (MatchOffset, MatchLength))
-      unless (null matches) $ do
-        putStrLn $ "\n" ++ makeSafe path ++ " (" ++ show (Data.ByteString.Char8.length content) ++ " bytes)"
-        mapM_
-          ( \(offset, matchLength) -> do
-              when (matchLength > 0) $ do
-                let lineNum = getLineNumber content offset + 1
-                let lineContent = getLineContent content lineNum
-                putStrLn $ show lineNum ++ ": " ++ Data.ByteString.Char8.unpack lineContent
-          )
-          matches
-
+-- handleDirectory :: String -> FilePath -> IO ()
+-- handleDirectory pattern path = do
+--   result <- try $ listDirectory path :: IO (Either IOException [String])
+--   case result of
+--     Left err -> putStrLn $ "Error: Could not read directory: " ++ path ++ " (" ++ show err ++ ")"
+--     Right subpathes -> do
+--       mapM_
+--         ( \subpath -> do
+--             unless (isHidden subpath) $
+--               processPath pattern $
+--                 path </> subpath
+--         )
+--         subpathes
+--
+-- handleFile :: String -> FilePath -> IO ()
+-- handleFile pattern path = do
+--   result <- try (Data.ByteString.Char8.readFile path) :: IO (Either IOException ByteString)
+--   case result of
+--     Left err -> putStrLn $ "Error: Could not read file: " ++ path ++ " (" ++ show err ++ ")"
+--     Right content -> do
+--       let matches = getAllMatches (content =~ pattern :: AllMatches [] (MatchOffset, MatchLength))
+--       unless (null matches) $ do
+--         putStrLn $ "\n" ++ makeSafe path ++ " (" ++ show (Data.ByteString.Char8.length content) ++ " bytes)"
+--         mapM_
+--           ( \(offset, matchLength) -> do
+--               when (matchLength > 0) $ do
+--                 let lineNum = getLineNumber content offset + 1
+--                 let lineContent = getLineContent content lineNum
+--                 putStrLn $ show lineNum ++ ": " ++ Data.ByteString.Char8.unpack lineContent
+--           )
+--           matches
+--
 showPathNotFoundError :: FilePath -> IO ()
 showPathNotFoundError path = hPutStrLn stderr $ "Error: Path doesn't exist: " ++ path
 

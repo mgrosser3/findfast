@@ -68,7 +68,7 @@ executable ff
 
     -- Other library packages from which modules are imported.
     build-depends:
-      base ^>=4.17.2.1,
+      base ^>=4.18.3.0,
       directory ^>=1.3.9.0,
       filepath ^>=1.5.4.0,
       time ^>=1.14,

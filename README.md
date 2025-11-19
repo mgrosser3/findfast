@@ -13,7 +13,7 @@ quickly searching files for text patterns—similar to the classic grep.
 > - [Haskell provided by mgrosser3](https://github.com/mgrosser3/findfast/)
 > - [Rust provided by ardo314](https://github.com/ardo314/find-fast)
 
-## Features
+## ✨ Features
 
 - **Hidden files** (starting with `.`) are skipped
 - **Inaccessible files** (no read premissions) are skipped with error message
@@ -21,7 +21,7 @@ quickly searching files for text patterns—similar to the classic grep.
 - **Duration measurement** at the end of execution
 - **UTF-8 support** for console output
 
-## Usage
+## 🚀 Usage
 
 **Syntax**
 
@@ -43,7 +43,7 @@ Search in a directory (recursive):
 ff "TODO|FIXME" ./src
 ```
 
-## 🔧 Build
+## 🔨 Development
 
 ### What You Need
 

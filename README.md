@@ -7,6 +7,12 @@ quickly searching files for text patterns—similar to the classic grep.
 > This project is for personal development and is purely a leisure activity.
 > **It is not recommended to use this tool in production.**
 
+> [!TIP]
+> Other implementations of this in other languages can be found here:
+>
+> - [Haskell provided by mgrosser3](https://github.com/mgrosser3/findfast/)
+> - [Rust provided by ardo314](https://github.com/ardo314/find-fast)
+
 ## Features
 
 - **Hidden files** (starting with `.`) are skipped

@@ -3,21 +3,52 @@
 Find Fast (short ff) is a lightweight and efficient command-line tool for
 quickly searching files for text patterns—similar to the classic grep.
 
-**It is used with:**
+> [!IMPORTANT]
+> This project is for personal development and is purely a leisure activity.
+> **It is not recommended to use this tool in production.**
+
+## Features
+
+- **Hidden files** (starting with `.`) are skipped
+- **Inaccessible files** (no read premissions) are skipped with error message
+- **Recursive search** through all subdirectories
+- **Duration measurement** at the end of execution
+- **UTF-8 support** for console output
+
+## Usage
+
+**Syntax**
 
 ```bash
-ff PATTERN [PATH]
+ff <pattern> <path>
 ```
 
 **Example:**
 
-Search for the word “grep” in the project's readme file.
+Search for the word “grep” in the project's readme file:
 
 ```bash
 ff grep README.md
 ```
 
+Search in a directory (recursive):
+
+```bash
+ff "TODO|FIXME" ./src
+```
+
 ## 🔧 Build
+
+### What You Need
+
+**Haskell Toolchain**
+
+You need the Following software:
+
+1. **GHC (Glasgow Haskell Compiler)** - Version 9.6 or higher
+2. **Cabal** - Version 3.12 or higher
+
+### Building the Project
 
 When building with ...
 

@@ -51,8 +51,14 @@ ff "TODO|FIXME" ./src
 
 You need the Following software:
 
-1. **GHC (Glasgow Haskell Compiler)** - Version 9.6 or higher
-2. **Cabal** - Version 3.12 or higher
+1. **GHC (Glasgow Haskell Compiler)** - Version 9.6
+2. **Cabal** - Version 3.12
+
+> [!TIP]
+> It is recommend that you use **GHCup** to install and manage your Haskell
+> toolchain. GHCup makes it easy to install GHC, Cabal, and other Haskell tools,
+> and allows you to switch between different versions effortlessly.
+> [haskell.org/ghcup](https://www.haskell.org/ghcup/)
 
 ### Building the Project
 

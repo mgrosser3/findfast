@@ -26,7 +26,7 @@ quickly searching files for text patterns—similar to the classic grep.
 **Syntax**
 
 ```bash
-ff <pattern> <path>
+ff <path> <regex-pattern>
 ```
 
 **Example:**

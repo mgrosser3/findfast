@@ -22,7 +22,7 @@ main = do
 
   args <- getArgs
   case args of
-    [pattern, path] -> do
+    [path, pattern] -> do
       absolutePath <- makeAbsolute path
       processPath (handleFile pattern) (handleDirectory pattern) absolutePath
     _ -> showUsageAndExit
@@ -32,7 +32,7 @@ main = do
 
 showUsageAndExit :: IO ()
 showUsageAndExit = do
-  hPutStrLn stderr "Usage: ff FILEPATH"
+  hPutStrLn stderr "Usage: ff FILEPATH SEARCH_PATTERN"
   exitFailure
 
 handleDirectory :: String -> FilePath -> IO ()

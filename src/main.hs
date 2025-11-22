@@ -6,7 +6,7 @@ import Data.ByteString.Char8 (ByteString, length, readFile, unpack)
 import Data.Time (diffUTCTime, getCurrentTime)
 import FindFast.Path (isHidden, processPath)
 import FindFast.Search (getLineContent, getLineNumber, makeSafe)
-import System.Directory (listDirectory, makeAbsolute)
+import System.Directory (doesPathExist, listDirectory, makeAbsolute)
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
 import System.FilePath ((</>))
@@ -22,17 +22,41 @@ main = do
 
   args <- getArgs
   case args of
-    [path, pattern] -> do
-      absolutePath <- makeAbsolute path
-      processPath (handleFile pattern) (handleDirectory pattern) absolutePath
+    [regex_pattern] -> findFast "." regex_pattern
+    [regex_pattern, path] -> findFast path regex_pattern
     _ -> showUsageAndExit
   endTime <- getCurrentTime
   let duration = diffUTCTime endTime startTime
   putStrLn $ "\nDuration: " ++ show (realToFrac duration * 1000 :: Double) ++ " ms"
 
+-- TODO:
+-- determinePathType :: String -> IO (Either String FilePath)
+-- determinePathType path = do
+--     exists <- doesPathExist path
+--     if exists
+--         then return $ Right path  -- Echter Pfad
+--         else if any (`elem` path) ['*', '?', '[', ']']
+--             then return $ Left "Error: Glob patterns not supported, use a valid file path"
+--             else return $ Left $ "Error: Path doesn't exist: " ++ path
+--
+findFast :: String -> String -> IO ()
+findFast path pattern = do
+  absolutePath <- makeAbsolute path
+  exists <- doesPathExist absolutePath
+  if exists
+    then processPath (handleFile pattern) (handleDirectory pattern) absolutePath
+    else
+      if any (`elem` path) ['*', '?', '[', ']']
+        then do
+          hPutStrLn stderr $ "Glob pattern is currently not supported." ++ absolutePath
+          exitFailure
+        else do
+          hPutStrLn stderr $ "Path doesn't exist: " ++ absolutePath
+          exitFailure
+
 showUsageAndExit :: IO ()
 showUsageAndExit = do
-  hPutStrLn stderr "Usage: ff FILEPATH SEARCH_PATTERN"
+  hPutStrLn stderr "Usage: ff <regex-pattern> <path>"
   exitFailure
 
 handleDirectory :: String -> FilePath -> IO ()

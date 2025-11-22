@@ -26,25 +26,20 @@ quickly searching files for text patterns—similar to the classic grep.
 **Syntax**
 
 ```bash
-ff '<glob-pattern>' '<regex-pattern>'
+ff '<regex-pattern>'
+```
+
+```bash
+ff '<regex-pattern>' <path>
+```
+
+```bash
+ff '<regex-pattern>' '<glob-pattern>'
 ```
 
 > [!IMPORTANT]
-> **Always enclose your Glob pattern in quotes to prevent shell expansion!**
-
-**Example:**
-
-Search for the word “grep” in the project's readme file:
-
-```bash
-ff '*.md' 'find'
-```
-
-Search in a directory (recursive):
-
-```bash
-ff './src/**' 'TODO|FIXME'
-```
+> **Always quote your RegEx and Glob pattern to prevent shell expansion and
+> special character interpretation!**
 
 ## 🔨 Development
 

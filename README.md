@@ -10,7 +10,7 @@ quickly searching files for text patterns—similar to the classic grep.
 > [!TIP]
 > Other implementations of this in other languages can be found here:
 >
-> - [Haskell provided by mgrosser3](https://github.com/mgrosser3/findfast/)
+> - [Elixir provided by pherklotz](https://github.com/pherklotz/find-fast-elixir/)
 > - [Rust provided by ardo314](https://github.com/ardo314/find-fast)
 
 ## ✨ Features

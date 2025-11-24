@@ -3,6 +3,7 @@ module FindFast.Search where
 import Data.ByteString.Char8 (ByteString, count, empty, lines, take)
 import Data.Char (ord)
 
+-- TODO: Is that still necessary?
 makeSafe :: String -> String
 makeSafe = map (\c -> if ord c > 127 then '?' else c)
 

@@ -1,4 +1,10 @@
 cradle:
   cabal:
-    - path: "./src"
-      component: "ff"
+    - path: "./lib"
+      component: "lib:fflib"
+    - path: "./app"
+      component: "exe:ff"
+    - path: "./bench"
+      component: "bench:ffbench"
+    - path: "./test"
+      component: "test:fftest"

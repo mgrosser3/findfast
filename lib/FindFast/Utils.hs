@@ -1,4 +1,4 @@
-module FindFast.Utils where
+module FindFast.Utils (isHidden, isBinaryFile) where
 
 import Data.ByteString (elem, readFile)
 import Data.List (isPrefixOf)

@@ -42,3 +42,15 @@ processPathRecursive handleFile path = processPath handleFile (handleDirectory h
                 processPathRecursive handleFile (path </> entry)
             )
             entries
+
+-- TODO: Version B of a recursive process path solution
+processPathRecursiveV2 :: (FilePath -> IO ()) -> FilePath -> IO ()
+processPathRecursiveV2 handleFile = process
+  where
+    process = processPath handleFile recurse
+
+    recurse path = do
+      result <- try (listDirectory path) :: IO (Either IOException [String])
+      case result of
+        Left _ -> return ()
+        Right entries -> mapM_ (\entry -> process (path </> entry)) entries

@@ -1,9 +1,11 @@
 module FindFast.ProcessPath (processPath) where
 
+import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless)
 import FindFast.Search
 import FindFast.Utils (isBinaryFile, isHidden)
-import System.Directory (doesDirectoryExist, doesFileExist)
+import System.Directory (doesDirectoryExist, doesFileExist, doesPathExist, listDirectory, makeAbsolute)
+import System.FilePath ((</>))
 import System.IO (hPutStrLn, stderr)
 
 processPath :: (FilePath -> IO ()) -> (FilePath -> IO ()) -> FilePath -> IO ()
@@ -24,3 +26,19 @@ processPath handleFile handleDirectory path
 
 showPathNotFoundError :: FilePath -> IO ()
 showPathNotFoundError path = hPutStrLn stderr $ "Error: Path doesn't exist: " ++ path
+
+-- TODO: Version A of a recursive process path solution based on currying
+processPathRecursive :: (FilePath -> IO ()) -> FilePath -> IO ()
+processPathRecursive handleFile path = processPath handleFile (handleDirectory handleFile) path
+  where
+    handleDirectory :: (FilePath -> IO ()) -> FilePath -> IO ()
+    handleDirectory handleFile path = do
+      result <- try (listDirectory path) :: IO (Either IOException [String])
+      case result of
+        Left _ -> return ()
+        Right entries ->
+          mapM_
+            ( \entry ->
+                processPathRecursive handleFile (path </> entry)
+            )
+            entries

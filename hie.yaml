@@ -3,7 +3,7 @@ cradle:
     - path: "./lib"
       component: "lib:fflib"
     - path: "./app"
-      component: "exe:ff"
+      component: "ff"
     - path: "./bench"
       component: "bench:ffbench"
     - path: "./test"

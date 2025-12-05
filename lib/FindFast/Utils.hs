@@ -1,6 +1,7 @@
-module FindFast.Utils (isHidden, isBinaryFile) where
+module FindFast.Utils (isHidden, isBinaryFile, makeSafe) where
 
 import Data.ByteString (elem, readFile)
+import Data.Char (ord)
 import Data.List (isPrefixOf)
 
 isBinaryFile :: FilePath -> IO Bool
@@ -17,3 +18,7 @@ isHidden :: FilePath -> Bool
 isHidden path
   | path == "." = False
   | otherwise = "." `isPrefixOf` path
+
+-- TODO: Is that still necessary?
+makeSafe :: String -> String
+makeSafe = map (\c -> if ord c > 127 then '?' else c)

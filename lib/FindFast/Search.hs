@@ -1,11 +1,7 @@
-module FindFast.Search where
+module FindFast.Search (getLineNumber, getLineContent) where
 
 import Data.ByteString.Char8 (ByteString, count, empty, lines, take)
 import Data.Char (ord)
-
--- TODO: Is that still necessary?
-makeSafe :: String -> String
-makeSafe = map (\c -> if ord c > 127 then '?' else c)
 
 getLineNumber :: Data.ByteString.Char8.ByteString -> Int -> Int
 getLineNumber content offset = Data.ByteString.Char8.count '\n' (Data.ByteString.Char8.take offset content)

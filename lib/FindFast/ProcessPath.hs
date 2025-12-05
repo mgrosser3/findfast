@@ -1,3 +1,6 @@
+-- | This module provides a framework for working with file paths.
+-- It contains a number of functions designed to help you work with
+-- files and directories.
 module FindFast.ProcessPath (processPath) where
 
 import Control.Exception (IOException, throwIO, try)
@@ -8,6 +11,17 @@ import System.Directory (doesDirectoryExist, doesFileExist, doesPathExist, listD
 import System.FilePath ((</>))
 import System.IO (hPutStrLn, stderr)
 
+-- | The function `processPath` offers the option of passing your own functions
+-- as handlers, which are applied to file paths and directory paths.
+--
+--   @
+--   processPath printFilePath printDirectoryPath "."
+--      where
+--          printFilePath :: String -> IO ()
+--          printFilePath path = putStrLn $ "File: " ++ path
+--          printDirectoryPath :: String -> IO ()
+--          printDirectoryPath path = putStrLn $ "Directory: " ++ path
+--   @
 processPath :: (FilePath -> IO ()) -> (FilePath -> IO ()) -> FilePath -> IO ()
 processPath handleFile handleDirectory path
   | isHidden path = return ()

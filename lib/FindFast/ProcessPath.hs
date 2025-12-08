@@ -1,7 +1,7 @@
 -- | This module provides a framework for working with file paths.
 -- It contains a number of functions designed to help you work with
 -- files and directories.
-module FindFast.ProcessPath (processPath) where
+module FindFast.ProcessPath (processPath, processPathRecursive) where
 
 import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless)
@@ -38,33 +38,51 @@ processPath handleFile handleDirectory path
             then handleDirectory path
             else showPathNotFoundError path
 
+-- | Recursively traverses a given file path and applies a function to
+--   every file encountered.
+--
+--   The function takes a file handler of type @(FilePath -> IO ())@
+--   and a starting path. The starting path may refer to either a file
+--   or a directory. If it is a directory, all subdirectories will be
+--   traversed recursively.
+--
+--   For every file discovered during the traversal, the provided
+--   handler function is executed. The entire operation is performed
+--   within the 'IO' monad.
+--
+--   Example:
+--
+--   @
+--   processPathRecursive printFilePath "."
+--      where
+--          printFilePath :: String -> IO ()
+--          printFilePath path = putStrLn $ "File: " ++ path
+--   @
+processPathRecursive :: (FilePath -> IO ()) -> FilePath -> IO ()
+processPathRecursive handleFile = process
+  where
+    -- process is a function (see currying)
+    -- handleFile is available within this scope via closure
+    process = processPath handleFile handleDirectory
+
+    handleDirectory :: FilePath -> IO ()
+    handleDirectory path = do
+      result <- try (listDirectory path) :: IO (Either IOException [String])
+      case result of
+        Left exception -> showInvalidDirectoryError path exception
+        Right entries ->
+          mapM_ (\entry -> unless (isHidden entry) $ process (path </> entry)) entries
+
+-- TODO: Move function into another module (e.g. FindFast.Utils or FindFast.Errors)
+showInvalidDirectoryError :: FilePath -> IOException -> IO ()
+showInvalidDirectoryError path exception =
+  System.IO.hPutStrLn stderr $
+    "Error: Could not read directory: "
+      ++ path
+      ++ " ("
+      ++ show exception
+      ++ ")"
+
+-- TODO: Move function into another module (e.g. FindFast.Utils or FindFast.Errors)
 showPathNotFoundError :: FilePath -> IO ()
 showPathNotFoundError path = hPutStrLn stderr $ "Error: Path doesn't exist: " ++ path
-
--- TODO: Version A of a recursive process path solution based on currying
-processPathRecursive :: (FilePath -> IO ()) -> FilePath -> IO ()
-processPathRecursive handleFile path = processPath handleFile (handleDirectory handleFile) path
-  where
-    handleDirectory :: (FilePath -> IO ()) -> FilePath -> IO ()
-    handleDirectory handleFile path = do
-      result <- try (listDirectory path) :: IO (Either IOException [String])
-      case result of
-        Left _ -> return ()
-        Right entries ->
-          mapM_
-            ( \entry ->
-                processPathRecursive handleFile (path </> entry)
-            )
-            entries
-
--- TODO: Version B of a recursive process path solution
-processPathRecursiveV2 :: (FilePath -> IO ()) -> FilePath -> IO ()
-processPathRecursiveV2 handleFile = process
-  where
-    process = processPath handleFile recurse
-
-    recurse path = do
-      result <- try (listDirectory path) :: IO (Either IOException [String])
-      case result of
-        Left _ -> return ()
-        Right entries -> mapM_ (\entry -> process (path </> entry)) entries

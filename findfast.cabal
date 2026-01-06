@@ -74,6 +74,7 @@ library fflib
       FindFast,
       FindFast.Search,
       FindFast.ProcessPath,
+      FindFast.Glob,
       FindFast.Utils
     build-depends:
       base ^>=4.18.3.0,

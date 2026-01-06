@@ -1,9 +1,10 @@
 module Main (main) where
 
-import ProcessPathSpec (matchSpec, processPathSpec)
+import GlobSpec (globSpec)
+import ProcessPathSpec (processPathSpec)
 import Test.Hspec
 
 main :: IO ()
 main = hspec $ do
   processPathSpec
-  matchSpec
+  globSpec

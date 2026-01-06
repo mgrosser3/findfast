@@ -1,10 +1,11 @@
 -- | This module provides a framework for working with file paths.
 -- It contains a number of functions designed to help you work with
 -- files and directories.
-module FindFast.ProcessPath (processPath, processPathRecursive, match) where
+module FindFast.ProcessPath (processPath, processPathRecursive) where
 
 import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless)
+import FindFast.Glob (matches)
 import FindFast.Search
 import FindFast.Utils (isBinaryFile, isHidden)
 import System.Directory (doesDirectoryExist, doesFileExist, doesPathExist, listDirectory, makeAbsolute)
@@ -86,25 +87,3 @@ showInvalidDirectoryError path exception =
 -- TODO: Move function into another module (e.g. FindFast.Utils or FindFast.Errors)
 showPathNotFoundError :: FilePath -> IO ()
 showPathNotFoundError path = hPutStrLn stderr $ "Error: Path doesn't exist: " ++ path
-
-match :: String -> String -> Bool
-match [] [] = True
-match [] _ = False
--- basic idea of match ('*', ps)
--- \*.txt  file.txt
--- \*.txt   ile.txt
--- \*.txt    le.txt
--- \*.txt     e.txt
--- \*.txt      .txt
--- \.txt       .txt   ✓
-match ('*' : ps) s =
-  match ps s -- if true -> done!
-    || case s of
-      [] -> False
-      (_ : xs) -> match ('*' : ps) xs -- next recursion!
-match ('?' : ps) (_ : xs) =
-  match ps xs
-match (p : ps) (s : xs)
-  | p == s = match ps xs
-  | otherwise = False
-match _ _ = False

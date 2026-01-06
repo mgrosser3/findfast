@@ -1,7 +1,7 @@
 module GlobSpec (globSpec) where
 
 import Control.Exception (IOException, throwIO, try)
-import FindFast.Glob (matches)
+import FindFast.Glob (match, pattern)
 import System.Directory (doesFileExist, listDirectory, makeAbsolute)
 import System.FilePath ((</>))
 import System.IO.Silently (capture)
@@ -10,58 +10,62 @@ import Test.Hspec
 globSpec :: Spec
 globSpec = do
   describe "test glob pattern matching" $ do
+    --
     -- Simple Patterns
-    it "*.txt matches test.txt" $ do
-      let result = "*.txt" `matches` "test.txt"
+    -- Wildcards '*' and '?'
+    --
+    it "*.txt match test.txt" $ do
+      let result = match (pattern "*.txt") "test.txt"
       result `shouldBe` True
 
-    it "*test* matches .txt" $ do
-      let result = "*test*" `matches` "test.txt"
+    it "*test* match .txt" $ do
+      let result = match (pattern "*test*") "test.txt"
       result `shouldBe` True
 
-    it "* matches README.md" $ do
-      let result = "*" `matches` "README.md"
+    it "* match README.md" $ do
+      let result = match (pattern "*") "README.md"
       result `shouldBe` True
 
     it "*.txt doesn't match README.md" $ do
-      let result = "*.txt" `matches` "README.md"
+      let result = match (pattern "*.txt") "README.md"
       result `shouldBe` False
 
     it "*.txt doesn't match test.txt.backup" $ do
-      let result = "*.txt" `matches` "test.txt.backup"
+      let result = match (pattern "*.txt") "test.txt.backup"
       result `shouldBe` False
 
-    it "test?.txt matches test1.txt" $ do
-      let result = "test?.txt" `matches` "test1.txt"
+    it "test?.txt match test1.txt" $ do
+      let result = match (pattern "test?.txt") "test1.txt"
       result `shouldBe` True
 
-    it "test?.txt matches testA.txt" $ do
-      let result = "test?.txt" `matches` "testA.txt"
+    it "test?.txt match testA.txt" $ do
+      let result = match (pattern "test?.txt") "testA.txt"
       result `shouldBe` True
 
     it "test?.txt doesn't match test12.txt" $ do
-      let result = "test?.txt" `matches` "test12.txt"
+      let result = match (pattern "test?.txt") "test12.txt"
       result `shouldBe` False
 
     it "test?.txt doesn't match test.txt" $ do
-      let result = "test?.txt" `matches` "test.txt"
+      let result = match (pattern "test?.txt") "test.txt"
       result `shouldBe` False
 
-    it "?.txt matches a.txt" $ do
-      let result = "?.txt" `matches` "a.txt"
+    it "?.txt match a.txt" $ do
+      let result = match (pattern "?.txt") "a.txt"
       result `shouldBe` True
 
     it "?.txt doesn't match ab.txt" $ do
-      let result = "?.txt" `matches` "ab.txt"
+      let result = match (pattern "?.txt") "ab.txt"
       result `shouldBe` False
 
+    --
     -- Pattern with Character Ranges
-    it "test[0-9].txt matches test5.txt" $ do
-      let result = "test[0-9].txt" `matches` "test5.txt"
+    --
+    --
+    it "test[0-9].txt match test5.txt" $ do
+      let result = match (pattern "test[0-9].txt") "test5.txt"
       result `shouldBe` True
 
-    it "test[0-9].txt matches test7.txt" $ do
-      let result = "test[0-9].txt" `matches` "test7.txt"
+    it "test[0-9].txt match test7.txt" $ do
+      let result = match (pattern "test[0-9].txt") "test7.txt"
       result `shouldBe` True
-
--- Combined Patterns

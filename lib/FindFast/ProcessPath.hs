@@ -5,7 +5,7 @@ module FindFast.ProcessPath (processPath, processPathRecursive) where
 
 import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless)
-import FindFast.Glob (matches)
+import FindFast.Glob (match)
 import FindFast.Search
 import FindFast.Utils (isBinaryFile, isHidden)
 import System.Directory (doesDirectoryExist, doesFileExist, doesPathExist, listDirectory, makeAbsolute)

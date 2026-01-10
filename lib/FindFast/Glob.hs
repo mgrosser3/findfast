@@ -12,6 +12,9 @@ module FindFast.Glob
   )
 where
 
+--
+--    Internal Glob Module
+--
 import qualified System.FilePath.Glob as Internal
 
 newtype Pattern = Pattern String

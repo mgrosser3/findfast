@@ -1,4 +1,4 @@
-module FindFast.RegEx (Pattern) where
+module FindFast.RegEx (Pattern, MatchOffset, MatchLength, getAllMatches) where
 
 import FindFast.ByteString (ByteString)
 --
@@ -9,12 +9,10 @@ import qualified Text.Regex.TDFA as TDFA
 
 type Pattern = String
 
-type Lines = [(Int, String)]
-
 type MatchOffset = Int
 
 type MatchLength = Int
 
-getAllMatches :: ByteString -> Pattern -> [(MatchOffset, MatchLength)]
-getAllMatches _ [] = []
-getAllMatches content pattern = TDFA.getAllMatches (content =~ pattern :: TDFA.AllMatches [] (TDFA.MatchOffset, TDFA.MatchLength))
+getAllMatches :: Pattern -> ByteString -> [(MatchOffset, MatchLength)]
+getAllMatches [] _ = []
+getAllMatches pattern content = TDFA.getAllMatches (content =~ pattern :: TDFA.AllMatches [] (TDFA.MatchOffset, TDFA.MatchLength))

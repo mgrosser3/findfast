@@ -12,7 +12,8 @@ import System.Directory (doesPathExist, listDirectory, makeAbsolute)
 import System.FilePath ((</>))
 import System.IO (hPutStrLn, stderr)
 import System.IO.Error (userError)
-import Text.Regex.TDFA (AllMatches, MatchLength, MatchOffset, getAllMatches, (=~))
+
+-- import Text.Regex.TDFA (AllMatches, MatchLength, MatchOffset, getAllMatches, (=~))
 
 findFast :: RegEx.Pattern -> FilePath -> IO ()
 findFast pattern path = do
@@ -27,25 +28,26 @@ findFastByGlob :: RegEx.Pattern -> Glob.CompiledPattern -> IO ()
 findFastByGlob pattern glob = return ()
 
 handleFile :: RegEx.Pattern -> FilePath -> IO ()
-handleFile pattern path = do
-  result <- try (BS.readFile path) :: IO (Either IOException BS.ByteString)
+handleFile pattern filepath = do
+  result <- try (BS.readFile filepath) :: IO (Either IOException BS.ByteString)
   case result of
-    Left exception ->
-      System.IO.hPutStrLn stderr $
-        "Error: Could not read file: "
-          ++ path
-          ++ " ("
-          ++ show exception
-          ++ ")"
-    Right content -> do
-      let matches = getAllMatches (content =~ pattern :: AllMatches [] (MatchOffset, MatchLength))
-      unless (Prelude.null matches) $ do
-        Prelude.putStrLn $ "\n" ++ makeSafe path ++ " (" ++ show (BS.length content) ++ " bytes)"
-        mapM_
-          ( \(offset, matchLength) -> do
-              when (matchLength > 0) $ do
-                let lineNum = getLineNumber content offset + 1
-                let lineContent = getLineContent content lineNum
-                Prelude.putStrLn $ show lineNum ++ ": " ++ BS.unpack lineContent
-          )
-          matches
+    Left exception -> printError "Could not read file!" exception
+    Right content -> printLinesWithMatches pattern filepath content
+
+printLinesWithMatches :: RegEx.Pattern -> FilePath -> BS.ByteString -> IO ()
+printLinesWithMatches filepath pattern content = do
+  let matches = RegEx.getAllMatches pattern content
+  mapM_
+    ( \(offset, length) -> do
+        when (length > 0) $ do
+          let lineNum = getLineNumber content offset + 1
+          let lineContent = getLineContent content lineNum
+          putStrLn $ "\n" ++ makeSafe filepath ++ " (" ++ show (BS.length content) ++ " bytes)"
+          putStrLn $ show lineNum ++ ": " ++ BS.unpack lineContent
+    )
+    matches
+
+printError :: String -> IOException -> IO ()
+printError message exception =
+  hPutStrLn stderr $
+    "Error: " ++ message ++ "\n" ++ show exception

@@ -72,6 +72,7 @@ library fflib
     hs-source-dirs: lib
     exposed-modules:
       FindFast,
+      FindFast.RegEx,
       FindFast.Search,
       FindFast.ProcessPath,
       FindFast.Glob,

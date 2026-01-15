@@ -7,7 +7,7 @@ import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless)
 import FindFast.Glob (match)
 import FindFast.Search
-import FindFast.Utils (isBinaryFile, isHidden)
+import FindFast.Utils (isBinaryFile, isHidden, printError)
 import System.Directory (doesDirectoryExist, doesFileExist, doesPathExist, listDirectory, makeAbsolute)
 import System.FilePath ((</>))
 import System.IO (hPutStrLn, stderr)
@@ -37,7 +37,7 @@ processPath handleFile handleDirectory path
         else
           if isDir
             then handleDirectory path
-            else showPathNotFoundError path
+            else hPutStrLn stderr $ "Path does not exist!" ++ path
 
 -- | Recursively traverses a given file path and applies a function to
 --   every file encountered.
@@ -70,20 +70,6 @@ processPathRecursive handleFile = process
     handleDirectory path = do
       result <- try (listDirectory path) :: IO (Either IOException [String])
       case result of
-        Left exception -> showInvalidDirectoryError path exception
+        Left exception -> printError "Could not read directory!" exception
         Right entries ->
           mapM_ (\entry -> unless (isHidden entry) $ process (path </> entry)) entries
-
--- TODO: Move function into another module (e.g. FindFast.Utils or FindFast.Errors)
-showInvalidDirectoryError :: FilePath -> IOException -> IO ()
-showInvalidDirectoryError path exception =
-  System.IO.hPutStrLn stderr $
-    "Error: Could not read directory: "
-      ++ path
-      ++ " ("
-      ++ show exception
-      ++ ")"
-
--- TODO: Move function into another module (e.g. FindFast.Utils or FindFast.Errors)
-showPathNotFoundError :: FilePath -> IO ()
-showPathNotFoundError path = hPutStrLn stderr $ "Error: Path doesn't exist: " ++ path

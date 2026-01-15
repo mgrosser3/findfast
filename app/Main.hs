@@ -4,15 +4,11 @@ import Data.Time (diffUTCTime, getCurrentTime)
 import FindFast (findFast, findFastByGlob, findFastRecursive)
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
-import System.IO (hPutStrLn, hSetEncoding, stderr, stdout, utf8)
+import System.IO (hPutStrLn, stderr)
 
 main :: IO ()
 main = do
   startTime <- getCurrentTime
-
-  hSetEncoding stdout utf8
-  hSetEncoding stderr utf8
-
   args <- getArgs
   case args of
     [regex_pattern] -> findFast regex_pattern "."

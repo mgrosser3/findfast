@@ -16,8 +16,9 @@ main = do
   args <- getArgs
   case args of
     [regex_pattern] -> findFast regex_pattern "."
+    ["-r", regex_pattern] -> findFastRecursive regex_pattern "."
     [regex_pattern, path]
-      | isGlobPattern path -> findFastbyGlob regex_pattern path
+      | isGlobPattern path -> findFastByGlob regex_pattern path
       | otherwise -> findFast regex_pattern path
     ["-r", regex_pattern, path]
       | isGlobPattern path -> showUsageAndExit

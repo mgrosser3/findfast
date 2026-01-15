@@ -15,4 +15,5 @@ type MatchLength = Int
 
 getAllMatches :: Pattern -> ByteString -> [(MatchOffset, MatchLength)]
 getAllMatches [] _ = []
-getAllMatches pattern content = TDFA.getAllMatches (content =~ pattern :: TDFA.AllMatches [] (TDFA.MatchOffset, TDFA.MatchLength))
+getAllMatches pattern content =
+  TDFA.getAllMatches (content =~ pattern :: TDFA.AllMatches [] (TDFA.MatchOffset, TDFA.MatchLength))

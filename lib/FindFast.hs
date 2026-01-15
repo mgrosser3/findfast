@@ -91,7 +91,7 @@ handleFile pattern filepath = do
 
 -- | Internal helper function to prints matching lines with their line numbers.
 printLinesWithMatches :: RegEx.Pattern -> FilePath -> BS.ByteString -> IO ()
-printLinesWithMatches filepath pattern content = do
+printLinesWithMatches pattern filepath content = do
   let matches = RegEx.getAllMatches pattern content
   mapM_
     ( \(offset, length) -> do

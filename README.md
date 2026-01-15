@@ -19,7 +19,6 @@ quickly searching files for text patterns—similar to the classic grep.
 - **Inaccessible files** (no read premissions) are skipped with error message
 - **Recursive search** through all subdirectories
 - **Duration measurement** at the end of execution
-- **UTF-8 support** for console output
 
 ## 🚀 Usage
 

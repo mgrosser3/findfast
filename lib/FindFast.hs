@@ -1,4 +1,4 @@
-module FindFast (findFast) where
+module FindFast (findFast, findFastRecursive) where
 
 import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless, when)

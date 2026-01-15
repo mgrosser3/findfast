@@ -1,7 +1,8 @@
 module Main where
 
+import Control.Monad (when)
 import Data.Time (diffUTCTime, getCurrentTime)
-import FindFast (findFast)
+import FindFast (findFast, findFastRecursive)
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, hSetEncoding, stderr, stdout, utf8)
@@ -15,8 +16,9 @@ main = do
 
   args <- getArgs
   case args of
-    [regex_pattern] -> findFast "." regex_pattern
-    [regex_pattern, path] -> findFast path regex_pattern
+    [regex_pattern] -> findFast regex_pattern "."
+    [regex_pattern, path] -> findFast regex_pattern path
+    ["-r", regex_pattern, path] -> findFastRecursive regex_pattern path
     _ -> showUsageAndExit
   endTime <- getCurrentTime
   let duration = diffUTCTime endTime startTime

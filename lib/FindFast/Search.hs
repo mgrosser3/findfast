@@ -1,14 +1,22 @@
-module FindFast.Search (getLineNumber, getLineContent) where
+module FindFast.Search (getLineContent) where
 
-import Data.ByteString.Char8 (ByteString, count, empty, lines, take)
 import Data.Char (ord)
+import qualified FindFast.ByteString as BS
 
-getLineNumber :: Data.ByteString.Char8.ByteString -> Int -> Int
-getLineNumber content offset = Data.ByteString.Char8.count '\n' (Data.ByteString.Char8.take offset content)
+getLineContent :: BS.ByteString -> Int -> (Int, Int, BS.ByteString)
+getLineContent content offset =
+  let -- all before the offset
+      (before, _) = BS.splitAt offset content
 
-getLineContent :: Data.ByteString.Char8.ByteString -> Int -> Data.ByteString.Char8.ByteString
-getLineContent content lineNum =
-  let allLines = Data.ByteString.Char8.lines content
-   in if lineNum > 0 && lineNum <= Prelude.length allLines
-        then allLines !! (lineNum - 1)
-        else Data.ByteString.Char8.empty
+      -- line number (starts with 1)
+      lineNum = BS.count '\n' before + 1
+
+      -- global offset of the line
+      lineStart = case BS.elemIndexEnd '\n' before of
+        Nothing -> 0
+        Just i -> i + 1
+
+      -- line content
+      contentFromLineStart = BS.drop lineStart content
+      lineContent = BS.takeWhile (/= '\n') contentFromLineStart
+   in (lineNum, lineStart, lineContent)

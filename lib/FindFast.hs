@@ -6,7 +6,7 @@ import qualified FindFast.ByteString as BS
 import qualified FindFast.Glob as Glob
 import FindFast.ProcessPath (processPath, processPathRecursive)
 import qualified FindFast.RegEx as RegEx
-import FindFast.Search (getLineContent, getLineNumber)
+import FindFast.Search (getLineContent)
 import FindFast.Utils (isHidden, makeSafe, printError)
 import System.Directory (doesPathExist, listDirectory, makeAbsolute)
 import System.FilePath ((</>))
@@ -93,12 +93,22 @@ handleFile pattern filepath = do
 printLinesWithMatches :: RegEx.Pattern -> FilePath -> BS.ByteString -> IO ()
 printLinesWithMatches pattern filepath content = do
   let matches = RegEx.getAllMatches pattern content
+  unless (null matches) $ putStrLn $ "\n\x1b[32m" ++ makeSafe filepath ++ "\x1b[0m (" ++ show (BS.length content) ++ " bytes)"
   mapM_
     ( \(offset, length) -> do
         when (length > 0) $ do
-          let lineNum = getLineNumber content offset + 1
-          let lineContent = getLineContent content lineNum
-          putStrLn $ "\n" ++ makeSafe filepath ++ " (" ++ show (BS.length content) ++ " bytes)"
-          putStrLn $ show lineNum ++ ": " ++ BS.unpack lineContent
+          let (lineNum, lineOffset, lineContent) = getLineContent content offset
+          putStrLn $ show lineNum ++ ": " ++ BS.unpack (highlightMatches (offset - lineOffset) length lineContent)
     )
     matches
+  where
+    -- Internal helper function to highlight the matched parts in the line
+    highlightMatches :: Int -> Int -> BS.ByteString -> BS.ByteString
+    highlightMatches offset length line =
+      let (before, rest) = BS.splitAt offset line
+          (middle, after) = BS.splitAt length rest
+       in before
+            <> BS.pack "\x1b[31m"
+            <> middle
+            <> BS.pack "\x1b[0m"
+            <> after

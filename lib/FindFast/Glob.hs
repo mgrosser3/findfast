@@ -9,6 +9,8 @@ module FindFast.Glob
     CompiledPattern,
     pattern,
     compile,
+    decompile,
+    commonDirectory,
   )
 where
 
@@ -43,7 +45,17 @@ compile :: String -> CompiledPattern
 compile pattern = CompiledPattern $ Internal.compile pattern
 
 -- |
+-- Decompiles a Pattern object into its textual representation.
+decompile :: CompiledPattern -> String
+decompile (CompiledPattern pattern) = Internal.decompile pattern
+
+-- |
 -- Constructor function for Pattern object.
 pattern :: String -> Pattern
 -- NOTE: parameter can be omitted due to eta reduction
 pattern = Pattern
+
+-- |
+-- Factors out the directory component of a Pattern.
+commonDirectory :: CompiledPattern -> (FilePath, CompiledPattern)
+commonDirectory (CompiledPattern pattern) = fmap CompiledPattern (Internal.commonDirectory pattern)

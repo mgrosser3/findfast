@@ -72,14 +72,19 @@ findFastRecursive pattern path = do
 --
 -- Example:
 --
--- >>> pattern <- Glob.compile "**/*.log"
+-- >>> pattern <- "**/*.log"
 -- >>> findFastByGlob "error|warning" pattern
 -- Match in: ./logs/app.log (1024 bytes)
 --   Line 5: Error occurred
 -- Match in: ./logs/system.log (2048 bytes)
 --   Line 23: Warning: Disk space low
 findFastByGlob :: RegEx.Pattern -> String -> IO ()
-findFastByGlob pattern glob = return ()
+findFastByGlob pattern glob = do
+  let (path, globPattern) = Glob.commonDirectory (Glob.compile glob)
+  absolutePath <- makeAbsolute path
+  putStrLn $ "Search in Path: " ++ absolutePath
+  putStrLn $ "With Pattern: " ++ Glob.decompile globPattern
+  return ()
 
 -- | Internal handler to search a single file for pattern matches.
 handleFile :: RegEx.Pattern -> FilePath -> IO ()

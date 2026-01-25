@@ -1,5 +1,6 @@
 module FindFast (findFast, findFastRecursive, findFastGlob) where
 
+import Control.Concurrent.Async
 import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless, when)
 import qualified FindFast.ByteString as BS
@@ -114,7 +115,7 @@ findFastByGlob pattern glob = do
 findFastGlob :: RegEx.Pattern -> String -> IO ()
 findFastGlob regexPattern globPattern =
   -- TODO: try mapConcurrently_
-  Glob.glob globPattern >>= mapM_ (handleFile regexPattern)
+  Glob.glob globPattern >>= mapConcurrently_ (handleFile regexPattern)
 
 -- | Internal handler to search a single file for pattern matches.
 handleFile :: RegEx.Pattern -> FilePath -> IO ()

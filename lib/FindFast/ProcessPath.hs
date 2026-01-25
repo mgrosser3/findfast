@@ -1,11 +1,11 @@
 -- | This module provides a framework for working with file paths.
 -- It contains a number of functions designed to help you work with
 -- files and directories.
-module FindFast.ProcessPath (processPath, processPathRecursive) where
+module FindFast.ProcessPath (processPath, processPathRecursive, processPathGlob) where
 
 import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless)
-import FindFast.Glob (match)
+import FindFast.Glob (Pattern)
 import FindFast.Search
 import FindFast.Utils (isBinaryFile, isHidden, printError)
 import System.Directory (doesDirectoryExist, doesFileExist, doesPathExist, listDirectory, makeAbsolute)
@@ -73,3 +73,6 @@ processPathRecursive handleFile = process
         Left exception -> printError "Could not read directory!" exception
         Right entries ->
           mapM_ (\entry -> unless (isHidden entry) $ process (path </> entry)) entries
+
+processPathGlob :: (FilePath -> IO ()) -> (FilePath -> IO ()) -> FilePath -> IO ()
+processPathGlob = processPath

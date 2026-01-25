@@ -8,15 +8,19 @@ module FindFast.Glob
     Pattern,
     CompiledPattern,
     pattern,
+    toString,
     compile,
     decompile,
     commonDirectory,
+    glob,
   )
 where
 
 --
 --    Internal Glob Module
 --
+
+import GHC.RTS.Flags (MiscFlags (internalCounters))
 import qualified System.FilePath.Glob as Internal
 
 newtype Pattern = Pattern String
@@ -56,6 +60,14 @@ pattern :: String -> Pattern
 pattern = Pattern
 
 -- |
+-- Converts a Pattern to a String
+toString :: Pattern -> String
+toString (Pattern p) = p
+
+-- |
 -- Factors out the directory component of a Pattern.
 commonDirectory :: CompiledPattern -> (FilePath, CompiledPattern)
 commonDirectory (CompiledPattern pattern) = fmap CompiledPattern (Internal.commonDirectory pattern)
+
+glob :: String -> IO [FilePath]
+glob = Internal.glob

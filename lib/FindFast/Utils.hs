@@ -8,7 +8,7 @@ where
 
 import Control.Exception (IOException)
 import Data.ByteString (elem, readFile)
-import Data.Char (ord)
+import Data.Char (isAscii)
 import Data.List (isPrefixOf)
 import System.IO (hPutStrLn, stderr)
 
@@ -27,9 +27,11 @@ isHidden path
   | path == "." = False
   | otherwise = "." `isPrefixOf` path
 
--- TODO: Is that still necessary?
 makeSafe :: String -> String
-makeSafe = map (\c -> if ord c > 127 then '?' else c)
+makeSafe = concatMap (\char -> if isAscii char then [char] else yellow "?")
+  where
+    yellow :: String -> String
+    yellow text = "\ESC[33m" ++ text ++ "\ESC[0m"
 
 printError :: String -> IOException -> IO ()
 printError message exception =

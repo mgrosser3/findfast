@@ -1,7 +1,7 @@
 # 🔍 Find Fast
 
 Find Fast (short ff) is a lightweight and efficient command-line tool for
-quickly searching files for text patterns—similar to the classic grep.
+quickly searching files for text patterns-similar to the classic grep.
 
 > [!IMPORTANT]
 > This project is for personal development and is purely a leisure activity.

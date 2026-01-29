@@ -9,7 +9,6 @@ import FindFast.ProcessPath (processPath, processPathGlob, processPathRecursive)
 import qualified FindFast.RegEx as RegEx
 import FindFast.Utils (isHidden, makeSafe, printError)
 import System.Directory (doesPathExist, listDirectory, makeAbsolute)
-import System.FilePath ((</>))
 import System.IO (hPutStrLn, stderr)
 import System.IO.Error (userError)
 
@@ -65,11 +64,25 @@ findFastRecursive pattern path = do
     then processPathRecursive (handleFile pattern) absolutePath
     else throwIO $ userError $ "Path doesn't exist: " ++ absolutePath
 
--- | Find file with glob file pattern
+-- | Search files matching a glob pattern and apply the given regular
+--   expression to each file.
+--
+--   The glob pattern is expanded to a list of file paths using
+--   'Glob.glob'. Each matching file is then processed concurrently
+--   with 'mapConcurrently_'.
+--
+--   This function performs IO and returns no result; it is intended
+--   for its side effects (e.g. printing matches).
 findFastGlob :: RegEx.Pattern -> String -> IO ()
 findFastGlob regexPattern globPattern =
-  -- NOTE: Bind Operator
+  --  NOTE: The result of 'Glob.glob' is passed to 'mapConcurrently_' using
+  --  the bind operator '(>>=)'.
   Glob.glob globPattern >>= mapConcurrently_ (handleFile regexPattern)
+
+--
+--
+--
+--
 
 -- | Internal handler to search a single file for pattern matches.
 handleFile :: RegEx.Pattern -> FilePath -> IO ()
@@ -103,6 +116,7 @@ printLinesWithMatches pattern filepath content = do
             <> BS.pack "\x1b[0m"
             <> after
 
+-- | Internal helper function to get line information at the given byte offset.
 getLineContent :: BS.ByteString -> Int -> (Int, Int, BS.ByteString)
 getLineContent content offset =
   let -- all before the offset

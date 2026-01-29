@@ -1,9 +1,6 @@
 module FindFast.RegEx (Pattern, MatchOffset, MatchLength, getAllMatches) where
 
 import FindFast.ByteString (ByteString)
---
---    Internal RegEx Module
---
 import Text.Regex.TDFA ((=~))
 import qualified Text.Regex.TDFA as TDFA
 

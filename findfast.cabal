@@ -28,7 +28,6 @@ library fflib
     exposed-modules:
       FindFast,
       FindFast.RegEx,
-      FindFast.Search,
       FindFast.ProcessPath,
       FindFast.Glob,
       FindFast.Utils

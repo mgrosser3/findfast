@@ -6,7 +6,6 @@ module FindFast.ProcessPath (processPath, processPathRecursive, processPathGlob)
 import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless)
 import FindFast.Glob (Pattern)
-import FindFast.Search
 import FindFast.Utils (isBinaryFile, isHidden, printError)
 import System.Directory (doesDirectoryExist, doesFileExist, doesPathExist, listDirectory, makeAbsolute)
 import System.FilePath ((</>))

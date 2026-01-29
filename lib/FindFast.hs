@@ -7,7 +7,6 @@ import qualified FindFast.ByteString as BS
 import qualified FindFast.Glob as Glob
 import FindFast.ProcessPath (processPath, processPathGlob, processPathRecursive)
 import qualified FindFast.RegEx as RegEx
-import FindFast.Search (getLineContent)
 import FindFast.Utils (isHidden, makeSafe, printError)
 import System.Directory (doesPathExist, listDirectory, makeAbsolute)
 import System.FilePath ((</>))
@@ -148,3 +147,21 @@ printLinesWithMatches pattern filepath content = do
             <> middle
             <> BS.pack "\x1b[0m"
             <> after
+
+getLineContent :: BS.ByteString -> Int -> (Int, Int, BS.ByteString)
+getLineContent content offset =
+  let -- all before the offset
+      (before, _) = BS.splitAt offset content
+
+      -- line number (starts with 1)
+      lineNum = BS.count '\n' before + 1
+
+      -- global offset of the line
+      lineStart = case BS.elemIndexEnd '\n' before of
+        Nothing -> 0
+        Just i -> i + 1
+
+      -- line content
+      contentFromLineStart = BS.drop lineStart content
+      lineContent = BS.takeWhile (/= '\n') contentFromLineStart
+   in (lineNum, lineStart, lineContent)

@@ -4,7 +4,7 @@ import Data.Time (diffUTCTime, getCurrentTime)
 import FindFast (findFast, findFastGlob, findFastRecursive)
 import System.Environment (getArgs)
 import System.Exit (exitFailure, exitSuccess)
-import System.IO (hPutStrLn, hSetEncoding, stderr, stdout, utf8)
+import System.IO (hSetEncoding, stderr, stdout, utf8)
 
 showUsage :: IO ()
 showUsage =

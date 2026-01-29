@@ -65,55 +65,10 @@ findFastRecursive pattern path = do
     then processPathRecursive (handleFile pattern) absolutePath
     else throwIO $ userError $ "Path doesn't exist: " ++ absolutePath
 
--- | Search files matching a glob pattern using a regex pattern.
---
--- Like 'findFast', but uses a glob pattern to filter which files to search.
--- Only files matching the glob pattern will be searched for the regex pattern.
---
--- Example:
---
--- >>> pattern <- "**/*.log"
--- >>> findFastByGlob "error|warning" pattern
--- Match in: ./logs/app.log (1024 bytes)
---   Line 5: Error occurred
--- Match in: ./logs/system.log (2048 bytes)
---   Line 23: Warning: Disk space low
-findFastByGlob :: RegEx.Pattern -> String -> IO ()
--- TODO: remove byGlob from name
-findFastByGlob pattern glob = do
-  let (path, globPattern) = Glob.commonDirectory (Glob.compile glob)
-  absolutePath <- makeAbsolute path
-  putStrLn "\n\n"
-  putStrLn $ "Search in Path: " ++ absolutePath
-  putStrLn $ "With Pattern: " ++ Glob.decompile globPattern
-  putStrLn "\n\n"
-  processPathGlob handleFileGlob (handleDirGlob $ Glob.pattern $ Glob.decompile globPattern) absolutePath
-  return ()
-  where
-    handleFileGlob :: FilePath -> IO ()
-    handleFileGlob path = do
-      putStrLn $ "File: " ++ path
-      return ()
-    --
-    handleDirGlob :: Glob.Pattern -> FilePath -> IO ()
-    handleDirGlob globPattern path = do
-      putStrLn $ "Dir: " ++ path
-      result <- try (listDirectory path) :: IO (Either IOException [String])
-      case result of
-        Left exception -> printError "Could not read directory!" exception
-        Right entries ->
-          mapM_
-            ( \entry -> do
-                when (Glob.match globPattern entry) $
-                  let (_, next) = break (== '/') $ Glob.toString globPattern
-                   in processPathGlob handleFileGlob (handleDirGlob $ Glob.pattern next) (path </> entry)
-            )
-            entries
-
 -- | Find file with glob file pattern
 findFastGlob :: RegEx.Pattern -> String -> IO ()
 findFastGlob regexPattern globPattern =
-  -- TODO: try mapConcurrently_
+  -- NOTE: Bind Operator
   Glob.glob globPattern >>= mapConcurrently_ (handleFile regexPattern)
 
 -- | Internal handler to search a single file for pattern matches.

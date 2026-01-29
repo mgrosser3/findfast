@@ -1,17 +1,23 @@
 module Main where
 
 import Data.Time (diffUTCTime, getCurrentTime)
+import Data.Version (Version, showVersion, versionBranch)
 import FindFast (findFast, findFastGlob, findFastRecursive)
+import Paths_findfast (version)
 import System.Environment (getArgs)
 import System.Exit (exitFailure, exitSuccess)
 import System.IO (hSetEncoding, stderr, stdout, utf8)
+
+-- NOTE: Record Update
+shortVersion :: Version
+shortVersion = version {versionBranch = take 3 (versionBranch version)}
 
 showUsage :: IO ()
 showUsage =
   putStrLn $
     unlines
       [ "",
-        "  FindFast 1.0.0",
+        "  FindFast " ++ showVersion shortVersion,
         "  Search for Regex Pattern in Files.",
         "  ===================================================",
         "",

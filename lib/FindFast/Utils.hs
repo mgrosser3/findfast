@@ -10,6 +10,7 @@ import Control.Exception (IOException)
 import Data.ByteString (elem, readFile)
 import Data.Char (isAscii)
 import Data.List (isPrefixOf)
+import System.FilePath (takeFileName)
 import System.IO (hPutStrLn, stderr)
 
 isBinaryFile :: FilePath -> IO Bool

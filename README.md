@@ -20,6 +20,11 @@ quickly searching files for text patterns-similar to the classic grep.
 - **Recursive search** through all subdirectories
 - **Duration measurement** at the end of execution
 
+## Known Issues
+
+- Matched lines are not sortet in the output
+- Multiple matches in one line results in muliple outputs
+
 ## 🚀 Usage
 
 **Syntax**

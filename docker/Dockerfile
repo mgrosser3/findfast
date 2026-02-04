@@ -94,6 +94,7 @@ WORKDIR /home/user
 RUN git clone https://github.com/pherklotz/find-fast-elixir.git "findfast-elixir"
 WORKDIR /home/user/findfast-elixir
 RUN mix escript.build
+RUN cp fifa "$HOME/.local/bin/fifa"
 
 # ---- sanity check ----
 RUN ghc --version \
@@ -105,3 +106,5 @@ RUN ghc --version \
 USER root
 RUN rm -rf /var/lib/apt/lists/*
 USER user
+
+WORKDIR /home/user

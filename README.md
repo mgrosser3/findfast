@@ -22,8 +22,8 @@ quickly searching files for text patterns-similar to the classic grep.
 
 ## Known Issues
 
-- Matched lines are not sortet in the output
-- Multiple matches in one line results in muliple outputs
+- Matched lines are not sorted in the output.
+- If a line contains multiple matches, each match is output separately.
 
 ## 🚀 Usage
 

@@ -59,10 +59,8 @@ For Windows users, batch script is provided: `run.bat`
 
 ### Run the executables
 
-Examples (depending on the project paths inside the container):
-
 ```bash
-./ff 'find' '/home/**/*.md'
-./find-fast '/home/**/*.md' 'find'
-./fifa '/home/**/*.md' 'find'
+ff 'find' '/home/**/*.md'
+find-fast '/home/**/*.md' 'find'
+fifa '/home/**/*.md' 'find'
 ```

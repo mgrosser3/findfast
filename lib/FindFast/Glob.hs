@@ -1,0 +1,73 @@
+-- |
+-- Abstract interface for file searches using glob patterns.
+--
+-- The concrete glob implementation is encapsulated, allowing it
+-- to be transparently replaced without affecting the rest of the code.
+module FindFast.Glob
+  ( Matchable (match),
+    Pattern,
+    CompiledPattern,
+    pattern,
+    toString,
+    compile,
+    decompile,
+    commonDirectory,
+    glob,
+  )
+where
+
+--
+--    Internal Glob Module
+--
+
+import GHC.RTS.Flags (MiscFlags (internalCounters))
+import qualified System.FilePath.Glob as Internal
+
+newtype Pattern = Pattern String
+
+newtype CompiledPattern = CompiledPattern Internal.Pattern
+
+-- Type Class
+class Matchable pattern where
+  match :: pattern -> FilePath -> Bool
+
+-- |
+-- Matches the given textual representation of glob pattern against the given
+-- FilePath, returning True if the pattern matches and False otherwise.
+instance Matchable Pattern where
+  -- NOTE: second parameter can be omitted due to eta reduction
+  match (Pattern pattern) = Internal.match (Internal.compile pattern)
+
+instance Matchable CompiledPattern where
+  -- NOTE: second parameter can be omitted due to eta reduction
+  match (CompiledPattern pattern) = Internal.match pattern
+
+-- |
+-- Compiles a glob pattern from its textual representation into a
+-- CompiledPattern object.
+compile :: String -> CompiledPattern
+compile pattern = CompiledPattern $ Internal.compile pattern
+
+-- |
+-- Decompiles a Pattern object into its textual representation.
+decompile :: CompiledPattern -> String
+decompile (CompiledPattern pattern) = Internal.decompile pattern
+
+-- |
+-- Constructor function for Pattern object.
+pattern :: String -> Pattern
+-- NOTE: parameter can be omitted due to eta reduction
+pattern = Pattern
+
+-- |
+-- Converts a Pattern to a String
+toString :: Pattern -> String
+toString (Pattern p) = p
+
+-- |
+-- Factors out the directory component of a Pattern.
+commonDirectory :: CompiledPattern -> (FilePath, CompiledPattern)
+commonDirectory (CompiledPattern pattern) = fmap CompiledPattern (Internal.commonDirectory pattern)
+
+glob :: String -> IO [FilePath]
+glob = Internal.glob

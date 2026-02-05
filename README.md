@@ -1,23 +1,68 @@
 # 🔍 Find Fast
 
 Find Fast (short ff) is a lightweight and efficient command-line tool for
-quickly searching files for text patterns—similar to the classic grep.
+quickly searching files for text patterns-similar to the classic grep.
 
-**It is used with:**
+> [!IMPORTANT]
+> This project is for personal development and is purely a leisure activity.
+> **It is not recommended to use this tool in production.**
+
+> [!TIP]
+> Other implementations of this in other languages can be found here:
+>
+> - [Elixir provided by pherklotz](https://github.com/pherklotz/find-fast-elixir/)
+> - [Rust provided by ardo314](https://github.com/ardo314/find-fast)
+
+## ✨ Features
+
+- **Hidden files** (starting with `.`) are skipped
+- **Inaccessible files** (no read premissions) are skipped with error message
+- **Recursive search** through all subdirectories
+- **Duration measurement** at the end of execution
+
+## Known Issues
+
+- Matched lines are not sorted in the output.
+- If a line contains multiple matches, each match is output separately.
+
+## 🚀 Usage
+
+**Syntax**
 
 ```bash
-ff PATTERN [PATH]
+ff '<regex-pattern>'
 ```
-
-**Example:**
-
-Search for the word “grep” in the project's readme file.
 
 ```bash
-ff grep README.md
+ff '<regex-pattern>' <path>
 ```
 
-## 🔧 Build
+```bash
+ff '<regex-pattern>' '<glob-pattern>'
+```
+
+> [!IMPORTANT]
+> **Always quote your RegEx and Glob pattern to prevent shell expansion and
+> special character interpretation!**
+
+## 🔨 Development
+
+### What You Need
+
+**Haskell Toolchain**
+
+You need the Following software:
+
+1. **GHC (Glasgow Haskell Compiler)** - Version 9.6
+2. **Cabal** - Version 3.12
+
+> [!TIP]
+> It is recommend that you use **GHCup** to install and manage your Haskell
+> toolchain. GHCup makes it easy to install GHC, Cabal, and other Haskell tools,
+> and allows you to switch between different versions effortlessly.
+> [haskell.org/ghcup](https://www.haskell.org/ghcup/)
+
+### Building the Project
 
 When building with ...
 

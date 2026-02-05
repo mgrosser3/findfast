@@ -1,0 +1,10 @@
+cradle:
+  cabal:
+    - path: "./lib"
+      component: "lib:fflib"
+    - path: "./app"
+      component: "ff"
+    - path: "./bench"
+      component: "bench:ffbench"
+    - path: "./test"
+      component: "test:fftest"

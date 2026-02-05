@@ -35,10 +35,8 @@ RUN ghcup install ghc 9.6.7 && ghcup set ghc 9.6.7 \
  && ghcup install cabal 3.12.1.0 && ghcup set cabal 3.12.1.0
 
 RUN git clone https://www.github.com/mgrosser3/findfast "findfast-haskell"
-
 WORKDIR /home/user/findfast-haskell
-RUN git checkout feature/v1.0.0
-RUN cabal install --overwrite-policy=always --installdir="$HOME/.local/bin"
+RUN cabal build && cabal install --overwrite-policy=always --installdir="$HOME/.local/bin"
 
 
 ###############################################################################

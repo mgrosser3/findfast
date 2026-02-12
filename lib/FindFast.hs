@@ -4,11 +4,11 @@ import Control.Concurrent.Async
 import Control.Exception (IOException, throwIO, try)
 import Control.Monad (unless, when)
 import qualified FindFast.ByteString as BS
-import qualified FindFast.Glob as Glob
 import FindFast.ProcessPath (processPath, processPathGlob, processPathRecursive)
 import qualified FindFast.RegEx as RegEx
 import FindFast.Utils (isHidden, makeSafe, printError)
 import System.Directory (doesPathExist, listDirectory, makeAbsolute)
+import qualified System.FilePath.Glob as Glob
 import System.IO (hPutStrLn, stderr)
 import System.IO.Error (userError)
 

@@ -31,7 +31,6 @@ library fflib
       FindFast.ByteString,
       FindFast.RegEx,
       FindFast.ProcessPath,
-      FindFast.Glob,
       FindFast.Utils
     build-depends:
       base ^>=4.18.3.0,

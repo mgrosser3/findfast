@@ -21,7 +21,7 @@ isBinaryFile path = do
 isHidden :: FilePath -> Bool
 isHidden path
   | path == "." = False
-  | otherwise = "." `isPrefixOf` (takeFileName path)
+  | otherwise = "." `isPrefixOf` takeFileName path
 
 makeSafe :: String -> String
 makeSafe = concatMap (\char -> if isAscii char then [char] else yellow "?")

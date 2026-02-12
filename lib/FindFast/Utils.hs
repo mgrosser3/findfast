@@ -1,3 +1,5 @@
+-- | Internal module providing miscellaneous utilities used across the
+-- codebase. This module should only contain small, general-purpose helpers.
 module FindFast.Utils
   ( isHidden,
     isBinaryFile,

@@ -1,3 +1,6 @@
+-- | Internal module that encapsulates all RegEx-related functionality
+-- for the FindFast project. It prevents third-party dependencies from leaking
+-- int the rest of the codebase and simplifies testing and future maintenance.
 module FindFast.RegEx (Pattern, MatchOffset, MatchLength, getAllMatches) where
 
 import FindFast.ByteString (ByteString)

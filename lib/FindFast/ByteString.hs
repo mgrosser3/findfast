@@ -1,5 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
+-- | Internal module that encapsulates all ByteString-related functionality
+-- for the FindFast project. It prevents third-party dependencies from leaking
+-- int the rest of the codebase and simplifies testing and future maintenance.
 module FindFast.ByteString
   ( ByteString,
     readFile,
